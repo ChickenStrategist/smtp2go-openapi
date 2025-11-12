@@ -1,0 +1,3423 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "SMTP2GO API",
+    "description": "SMTP2GO is a scalable email and SMS service provider that simplifies delivery for everyday senders and businesses. This API allows you to send emails/SMS, access reporting and statistics, and manage account features programmatically.",
+    "version": "3.0.0",
+    "contact": {
+      "name": "SMTP2GO Support",
+      "url": "https://support.smtp2go.com",
+      "email": "support@smtp2go.com"
+    },
+    "termsOfService": "https://www.smtp2go.com/terms/",
+    "license": {
+      "name": "Proprietary",
+      "url": "https://www.smtp2go.com/terms/"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.smtp2go.com/v3",
+      "description": "Global endpoint (automatically routes to nearest region)"
+    },
+    {
+      "url": "https://us-api.smtp2go.com/v3",
+      "description": "United States endpoint"
+    },
+    {
+      "url": "https://eu-api.smtp2go.com/v3",
+      "description": "European Union endpoint"
+    },
+    {
+      "url": "https://au-api.smtp2go.com/v3",
+      "description": "Australia endpoint"
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyHeader": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Email",
+      "description": "Send and search emails"
+    },
+    {
+      "name": "SMS",
+      "description": "Send and view SMS messages (paid plans only)"
+    },
+    {
+      "name": "Activity",
+      "description": "Search email events and activity"
+    },
+    {
+      "name": "Allowed Senders",
+      "description": "Manage allowed senders allowlist/blocklist"
+    },
+    {
+      "name": "SMTP Users",
+      "description": "Manage SMTP authentication users"
+    },
+    {
+      "name": "Sender Domains",
+      "description": "Manage and verify sender domains"
+    },
+    {
+      "name": "Single Sender Emails",
+      "description": "Manage individual authorized sender email addresses"
+    },
+    {
+      "name": "Statistics",
+      "description": "Retrieve account statistics and reports"
+    },
+    {
+      "name": "Email Archiving",
+      "description": "Search and view archived emails (paid plans only)"
+    },
+    {
+      "name": "Subaccounts",
+      "description": "Manage subaccounts (paid plans only)"
+    },
+    {
+      "name": "Suppressions",
+      "description": "Manage suppressed email addresses and domains"
+    },
+    {
+      "name": "IP Allowlist",
+      "description": "Manage IP address allowlist for sending restrictions"
+    },
+    {
+      "name": "Templates",
+      "description": "Manage email templates"
+    },
+    {
+      "name": "Webhooks",
+      "description": "Manage webhook configurations"
+    }
+  ],
+  "paths": {
+    "/email/send": {
+      "post": {
+        "tags": ["Email"],
+        "summary": "Send standard email",
+        "description": "Send an email by providing email components (sender, recipient, subject, body) as JSON. Maximum email size: 50 MB. Maximum recipients per field: 100.",
+        "operationId": "sendEmail",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendEmailRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email sent successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SendEmailResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/email/mime": {
+      "post": {
+        "tags": ["Email"],
+        "summary": "Send MIME email",
+        "description": "Send a pre-composed MIME email string. Maximum email size: 50 MB.",
+        "operationId": "sendMimeEmail",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendMimeEmailRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "MIME email sent successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SendEmailResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/email/search": {
+      "post": {
+        "tags": ["Email"],
+        "summary": "Search sent emails",
+        "description": "Search previously sent emails by various criteria",
+        "operationId": "searchEmails",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchEmailsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Search results returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchEmailsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/sms/send": {
+      "post": {
+        "tags": ["SMS"],
+        "summary": "Send SMS message",
+        "description": "Send SMS messages to single or multiple recipients (up to 100). Paid plans only. Additional charges apply.",
+        "operationId": "sendSMS",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendSMSRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SMS sent successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SendSMSResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/sms/search": {
+      "post": {
+        "tags": ["SMS"],
+        "summary": "View received SMS messages",
+        "description": "View SMS messages received if a recipient responds. Paid plans only.",
+        "operationId": "searchSMS",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchSMSRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SMS search results returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchSMSResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/activity/search": {
+      "post": {
+        "tags": ["Activity"],
+        "summary": "Search email activity events",
+        "description": "Search email events such as bounces, opens, clicks, and unsubscribes. Rate limit: 60 requests per minute.",
+        "operationId": "searchActivity",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchActivityRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Activity search results returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchActivityResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
+    "/allowed_senders/view": {
+      "post": {
+        "tags": ["Allowed Senders"],
+        "summary": "View allowed senders",
+        "description": "View the list of allowed or blocked sender addresses/domains",
+        "operationId": "viewAllowedSenders",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BaseRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Allowed senders list returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewAllowedSendersResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/allowed_senders/add": {
+      "post": {
+        "tags": ["Allowed Senders"],
+        "summary": "Add allowed sender",
+        "description": "Add an email address or domain to the allowed/blocked senders list",
+        "operationId": "addAllowedSender",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddAllowedSenderRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Allowed sender added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/allowed_senders/remove": {
+      "post": {
+        "tags": ["Allowed Senders"],
+        "summary": "Remove allowed sender",
+        "description": "Remove an email address or domain from the allowed/blocked senders list",
+        "operationId": "removeAllowedSender",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveAllowedSenderRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Allowed sender removed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/allowed_senders/update": {
+      "post": {
+        "tags": ["Allowed Senders"],
+        "summary": "Update allowed senders configuration",
+        "description": "Update allowed senders feature configuration (allowlist vs blocklist mode)",
+        "operationId": "updateAllowedSenders",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAllowedSendersRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Configuration updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/users/smtp/view": {
+      "post": {
+        "tags": ["SMTP Users"],
+        "summary": "View SMTP users",
+        "description": "View all SMTP authentication users in the account",
+        "operationId": "viewSMTPUsers",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BaseRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SMTP users list returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewSMTPUsersResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/users/smtp/add": {
+      "post": {
+        "tags": ["SMTP Users"],
+        "summary": "Add SMTP user",
+        "description": "Create a new SMTP authentication user",
+        "operationId": "addSMTPUser",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddSMTPUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SMTP user created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddSMTPUserResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/users/smtp/edit": {
+      "post": {
+        "tags": ["SMTP Users"],
+        "summary": "Edit SMTP user",
+        "description": "Update an existing SMTP authentication user",
+        "operationId": "editSMTPUser",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditSMTPUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SMTP user updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/users/smtp/remove": {
+      "post": {
+        "tags": ["SMTP Users"],
+        "summary": "Remove SMTP user",
+        "description": "Delete an SMTP authentication user",
+        "operationId": "removeSMTPUser",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveSMTPUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SMTP user removed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/domain/view": {
+      "post": {
+        "tags": ["Sender Domains"],
+        "summary": "View sender domains",
+        "description": "View all sender domains in the account",
+        "operationId": "viewDomains",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BaseRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sender domains list returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewDomainsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/domain/add": {
+      "post": {
+        "tags": ["Sender Domains"],
+        "summary": "Add sender domain",
+        "description": "Add a new sender domain to the account",
+        "operationId": "addDomain",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddDomainRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddDomainResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/domain/remove": {
+      "post": {
+        "tags": ["Sender Domains"],
+        "summary": "Remove sender domain",
+        "description": "Remove a sender domain from the account",
+        "operationId": "removeDomain",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveDomainRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain removed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/domain/verify": {
+      "post": {
+        "tags": ["Sender Domains"],
+        "summary": "Verify sender domain",
+        "description": "Verify a sender domain's DNS records (SPF, DKIM)",
+        "operationId": "verifyDomain",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyDomainRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain verification status returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerifyDomainResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/domain/tracking": {
+      "post": {
+        "tags": ["Sender Domains"],
+        "summary": "Edit tracking domain",
+        "description": "Configure custom tracking domain for a sender domain",
+        "operationId": "editTrackingDomain",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditTrackingDomainRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tracking domain updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/domain/returnpath": {
+      "post": {
+        "tags": ["Sender Domains"],
+        "summary": "Edit return path domain",
+        "description": "Configure custom return path domain for a sender domain",
+        "operationId": "editReturnPathDomain",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditReturnPathDomainRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return path domain updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/single_sender_emails/view": {
+      "post": {
+        "tags": ["Single Sender Emails"],
+        "summary": "View single sender emails",
+        "description": "View all authorized individual sender email addresses",
+        "operationId": "viewSingleSenderEmails",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BaseRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Single sender emails list returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewSingleSenderEmailsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/single_sender_emails/add": {
+      "post": {
+        "tags": ["Single Sender Emails"],
+        "summary": "Add single sender email",
+        "description": "Authorize an individual email address to send (alternative to domain verification)",
+        "operationId": "addSingleSenderEmail",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddSingleSenderEmailRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Single sender email added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/single_sender_emails/remove": {
+      "post": {
+        "tags": ["Single Sender Emails"],
+        "summary": "Remove single sender email",
+        "description": "Remove an authorized individual sender email address",
+        "operationId": "removeSingleSenderEmail",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveSingleSenderEmailRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Single sender email removed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/stats/email_bounces": {
+      "post": {
+        "tags": ["Statistics"],
+        "summary": "Email bounces statistics",
+        "description": "Retrieve email bounce statistics",
+        "operationId": "getEmailBouncesStats",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StatsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bounce statistics returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/stats/email_cycle": {
+      "post": {
+        "tags": ["Statistics"],
+        "summary": "Email cycle statistics",
+        "description": "Retrieve email cycle and usage statistics",
+        "operationId": "getEmailCycleStats",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StatsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cycle statistics returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/stats/email_history": {
+      "post": {
+        "tags": ["Statistics"],
+        "summary": "Email history statistics",
+        "description": "Retrieve historical email statistics",
+        "operationId": "getEmailHistoryStats",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StatsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "History statistics returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/stats/email_spam": {
+      "post": {
+        "tags": ["Statistics"],
+        "summary": "Email spam complaints statistics",
+        "description": "Retrieve spam complaint statistics",
+        "operationId": "getEmailSpamStats",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StatsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Spam statistics returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/stats/email_unsubs": {
+      "post": {
+        "tags": ["Statistics"],
+        "summary": "Email unsubscribe statistics",
+        "description": "Retrieve unsubscribe statistics",
+        "operationId": "getEmailUnsubsStats",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StatsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Unsubscribe statistics returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/stats/email_summary": {
+      "post": {
+        "tags": ["Statistics"],
+        "summary": "Email summary statistics",
+        "description": "Retrieve comprehensive email summary statistics",
+        "operationId": "getEmailSummaryStats",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StatsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Summary statistics returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/archive/search": {
+      "post": {
+        "tags": ["Email Archiving"],
+        "summary": "Search archived emails",
+        "description": "Search archived emails (paid plans only, requires email archiving enabled)",
+        "operationId": "searchArchivedEmails",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchArchiveRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Archive search results returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchArchiveResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/archive/email": {
+      "post": {
+        "tags": ["Email Archiving"],
+        "summary": "View archived email",
+        "description": "Retrieve a specific archived email by ID (paid plans only)",
+        "operationId": "viewArchivedEmail",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewArchiveEmailRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Archived email retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewArchiveEmailResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/subaccount/add": {
+      "post": {
+        "tags": ["Subaccounts"],
+        "summary": "Add subaccount",
+        "description": "Create a new subaccount (paid plans only)",
+        "operationId": "addSubaccount",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddSubaccountRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Subaccount created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddSubaccountResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/subaccount/edit": {
+      "post": {
+        "tags": ["Subaccounts"],
+        "summary": "Update subaccount",
+        "description": "Update an existing subaccount (paid plans only)",
+        "operationId": "editSubaccount",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditSubaccountRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Subaccount updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/subaccount/close": {
+      "post": {
+        "tags": ["Subaccounts"],
+        "summary": "Close subaccount",
+        "description": "Close an active subaccount (paid plans only)",
+        "operationId": "closeSubaccount",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubaccountIdRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Subaccount closed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/subaccount/reopen": {
+      "post": {
+        "tags": ["Subaccounts"],
+        "summary": "Reopen subaccount",
+        "description": "Reopen a closed subaccount (paid plans only)",
+        "operationId": "reopenSubaccount",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubaccountIdRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Subaccount reopened successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/subaccount/reinvite": {
+      "post": {
+        "tags": ["Subaccounts"],
+        "summary": "Resend subaccount invitation",
+        "description": "Resend invitation email to subaccount user (paid plans only)",
+        "operationId": "reinviteSubaccount",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubaccountIdRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Invitation resent successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/suppression/view": {
+      "post": {
+        "tags": ["Suppressions"],
+        "summary": "View suppressions",
+        "description": "View all suppressed email addresses and domains",
+        "operationId": "viewSuppressions",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewSuppressionsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Suppressions list returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewSuppressionsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/suppression/add": {
+      "post": {
+        "tags": ["Suppressions"],
+        "summary": "Add suppression",
+        "description": "Add an email address or domain to the suppression list",
+        "operationId": "addSuppression",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddSuppressionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Suppression added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/suppression/remove": {
+      "post": {
+        "tags": ["Suppressions"],
+        "summary": "Remove suppression",
+        "description": "Remove an email address or domain from the suppression list",
+        "operationId": "removeSuppression",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveSuppressionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Suppression removed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/ip_allow_list": {
+      "post": {
+        "tags": ["IP Allowlist"],
+        "summary": "Get IP allowlist status",
+        "description": "Check if IP allowlist feature is enabled",
+        "operationId": "getIPAllowlistStatus",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BaseRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "IP allowlist status returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IPAllowlistStatusResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/ip_allow_list/view": {
+      "post": {
+        "tags": ["IP Allowlist"],
+        "summary": "View IP allowlist entries",
+        "description": "View all IP addresses in the allowlist",
+        "operationId": "viewIPAllowlist",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BaseRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "IP allowlist entries returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewIPAllowlistResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/ip_allow_list/add": {
+      "post": {
+        "tags": ["IP Allowlist"],
+        "summary": "Add IP to allowlist",
+        "description": "Add an IP address to the allowlist",
+        "operationId": "addIPAllowlist",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddIPAllowlistRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "IP address added to allowlist successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/ip_allow_list/edit": {
+      "post": {
+        "tags": ["IP Allowlist"],
+        "summary": "Edit IP allowlist entry",
+        "description": "Update an existing IP allowlist entry",
+        "operationId": "editIPAllowlist",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditIPAllowlistRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "IP allowlist entry updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/ip_allow_list/remove": {
+      "post": {
+        "tags": ["IP Allowlist"],
+        "summary": "Remove IP from allowlist",
+        "description": "Remove an IP address from the allowlist",
+        "operationId": "removeIPAllowlist",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveIPAllowlistRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "IP address removed from allowlist successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/template/view": {
+      "post": {
+        "tags": ["Templates"],
+        "summary": "View template details",
+        "description": "Retrieve details of a specific email template",
+        "operationId": "viewTemplate",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewTemplateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Template details returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewTemplateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/template/search": {
+      "post": {
+        "tags": ["Templates"],
+        "summary": "Search email templates",
+        "description": "Search for email templates by criteria",
+        "operationId": "searchTemplates",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchTemplatesRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Template search results returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchTemplatesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/template/add": {
+      "post": {
+        "tags": ["Templates"],
+        "summary": "Add email template",
+        "description": "Create a new email template",
+        "operationId": "addTemplate",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddTemplateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Template created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddTemplateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/template/edit": {
+      "post": {
+        "tags": ["Templates"],
+        "summary": "Update email template",
+        "description": "Update an existing email template",
+        "operationId": "editTemplate",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditTemplateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Template updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/template/delete": {
+      "post": {
+        "tags": ["Templates"],
+        "summary": "Delete email template",
+        "description": "Delete an existing email template",
+        "operationId": "deleteTemplate",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteTemplateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Template deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/webhook/view": {
+      "post": {
+        "tags": ["Webhooks"],
+        "summary": "View webhooks",
+        "description": "View all configured webhooks",
+        "operationId": "viewWebhooks",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BaseRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhooks list returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewWebhooksResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/webhook/add": {
+      "post": {
+        "tags": ["Webhooks"],
+        "summary": "Add webhook",
+        "description": "Create a new webhook configuration. Free plans limited to 1 webhook, paid plans up to 10.",
+        "operationId": "addWebhook",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddWebhookRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddWebhookResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/webhook/edit": {
+      "post": {
+        "tags": ["Webhooks"],
+        "summary": "Edit webhook",
+        "description": "Update an existing webhook configuration",
+        "operationId": "editWebhook",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditWebhookRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/webhook/remove": {
+      "post": {
+        "tags": ["Webhooks"],
+        "summary": "Remove webhook",
+        "description": "Delete an existing webhook configuration",
+        "operationId": "removeWebhook",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveWebhookRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook removed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Smtp2go-Api-Key",
+        "description": "API key authentication via header. Alternatively, you can include 'api_key' in the request body for any endpoint."
+      }
+    },
+    "schemas": {
+      "BaseRequest": {
+        "type": "object",
+        "properties": {
+          "api_key": {
+            "type": "string",
+            "description": "API key for authentication (optional if using header authentication)"
+          },
+          "subaccount_id": {
+            "type": "string",
+            "description": "Subaccount ID for subaccount operations (optional)"
+          }
+        }
+      },
+      "SendEmailRequest": {
+        "type": "object",
+        "required": ["sender", "to", "subject"],
+        "properties": {
+          "api_key": {
+            "type": "string",
+            "description": "API key for authentication (optional if using header authentication)"
+          },
+          "sender": {
+            "type": "string",
+            "format": "email",
+            "description": "RFC-822 formatted sender email address"
+          },
+          "to": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 100,
+            "description": "Array of recipient email addresses (max 100)"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Email subject line"
+          },
+          "text_body": {
+            "type": "string",
+            "description": "Plain text email body"
+          },
+          "html_body": {
+            "type": "string",
+            "description": "HTML email body"
+          },
+          "cc": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 100,
+            "description": "Array of CC recipient email addresses (max 100)"
+          },
+          "bcc": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 100,
+            "description": "Array of BCC recipient email addresses (max 100)"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Attachment"
+            },
+            "description": "Array of file attachments"
+          },
+          "inlines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InlineAttachment"
+            },
+            "description": "Array of inline attachments (for embedding images)"
+          },
+          "custom_headers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomHeader"
+            },
+            "description": "Array of custom email headers"
+          },
+          "template_id": {
+            "type": "string",
+            "description": "Template ID to use for email content"
+          },
+          "template_data": {
+            "type": "object",
+            "description": "Template variables for personalization"
+          }
+        }
+      },
+      "Attachment": {
+        "type": "object",
+        "required": ["filename", "fileblob"],
+        "properties": {
+          "filename": {
+            "type": "string",
+            "description": "Name of the attached file"
+          },
+          "fileblob": {
+            "type": "string",
+            "format": "base64",
+            "description": "Base64-encoded file content"
+          },
+          "mimetype": {
+            "type": "string",
+            "description": "MIME type of the file"
+          }
+        }
+      },
+      "InlineAttachment": {
+        "type": "object",
+        "required": ["filename", "fileblob"],
+        "properties": {
+          "filename": {
+            "type": "string",
+            "description": "Content ID for inline reference"
+          },
+          "fileblob": {
+            "type": "string",
+            "format": "base64",
+            "description": "Base64-encoded image content"
+          },
+          "mimetype": {
+            "type": "string",
+            "description": "MIME type of the image"
+          }
+        }
+      },
+      "CustomHeader": {
+        "type": "object",
+        "required": ["header", "value"],
+        "properties": {
+          "header": {
+            "type": "string",
+            "description": "Header name"
+          },
+          "value": {
+            "type": "string",
+            "description": "Header value"
+          }
+        }
+      },
+      "SendEmailResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "description": "Unique request identifier"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "succeeded": {
+                "type": "integer",
+                "description": "Number of successfully sent emails"
+              },
+              "failed": {
+                "type": "integer",
+                "description": "Number of failed email deliveries"
+              },
+              "failures": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                },
+                "description": "Array of failure details"
+              },
+              "email_id": {
+                "type": "string",
+                "description": "Unique email identifier for tracking"
+              }
+            }
+          }
+        }
+      },
+      "SendMimeEmailRequest": {
+        "type": "object",
+        "required": ["sender", "recipients", "mime_data"],
+        "properties": {
+          "api_key": {
+            "type": "string",
+            "description": "API key for authentication (optional if using header authentication)"
+          },
+          "sender": {
+            "type": "string",
+            "format": "email",
+            "description": "Sender email address"
+          },
+          "recipients": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 100,
+            "description": "Array of recipient email addresses (max 100)"
+          },
+          "mime_data": {
+            "type": "string",
+            "format": "base64",
+            "description": "Base64-encoded MIME message string"
+          }
+        }
+      },
+      "SearchEmailsRequest": {
+        "type": "object",
+        "properties": {
+          "api_key": {
+            "type": "string",
+            "description": "API key for authentication"
+          },
+          "search_sender": {
+            "type": "string",
+            "description": "Filter by sender email address"
+          },
+          "search_recipient": {
+            "type": "string",
+            "description": "Filter by recipient email address"
+          },
+          "search_subject": {
+            "type": "string",
+            "description": "Filter by email subject"
+          },
+          "email_id": {
+            "type": "string",
+            "description": "Filter by specific email ID"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of results to return"
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Number of results to skip"
+          }
+        }
+      },
+      "SearchEmailsResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "emails": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "total": {
+                "type": "integer",
+                "description": "Total number of matching emails"
+              }
+            }
+          }
+        }
+      },
+      "SendSMSRequest": {
+        "type": "object",
+        "required": ["message", "to"],
+        "properties": {
+          "api_key": {
+            "type": "string",
+            "description": "API key for authentication"
+          },
+          "message": {
+            "type": "string",
+            "description": "SMS message text"
+          },
+          "to": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 100,
+            "description": "Array of recipient phone numbers (max 100)"
+          },
+          "from": {
+            "type": "string",
+            "description": "Sender phone number or ID"
+          }
+        }
+      },
+      "SendSMSResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "succeeded": {
+                "type": "integer"
+              },
+              "failed": {
+                "type": "integer"
+              },
+              "failures": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SearchSMSRequest": {
+        "type": "object",
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "offset": {
+            "type": "integer"
+          }
+        }
+      },
+      "SearchSMSResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "messages": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SearchActivityRequest": {
+        "type": "object",
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "search_sender": {
+            "type": "string",
+            "description": "Filter by sender email address"
+          },
+          "search_recipient": {
+            "type": "string",
+            "description": "Filter by recipient email address"
+          },
+          "search_subject": {
+            "type": "string",
+            "description": "Filter by email subject"
+          },
+          "event_types": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["delivered", "opened", "clicked", "bounced", "spam", "unsubscribed"]
+            },
+            "description": "Filter by event types"
+          },
+          "only_latest": {
+            "type": "boolean",
+            "description": "Return only latest event per email"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum results to return"
+          }
+        }
+      },
+      "SearchActivityResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "events": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ViewAllowedSendersResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "senders": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AddAllowedSenderRequest": {
+        "type": "object",
+        "required": ["sender"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "sender": {
+            "type": "string",
+            "description": "Email address or domain to add"
+          }
+        }
+      },
+      "RemoveAllowedSenderRequest": {
+        "type": "object",
+        "required": ["sender"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "sender": {
+            "type": "string",
+            "description": "Email address or domain to remove"
+          }
+        }
+      },
+      "UpdateAllowedSendersRequest": {
+        "type": "object",
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "string",
+            "enum": ["allow", "block"],
+            "description": "Allowlist or blocklist mode"
+          }
+        }
+      },
+      "ViewSMTPUsersResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "users": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AddSMTPUserRequest": {
+        "type": "object",
+        "required": ["username", "password"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string",
+            "description": "SMTP username"
+          },
+          "password": {
+            "type": "string",
+            "description": "SMTP password"
+          },
+          "description": {
+            "type": "string",
+            "description": "User description"
+          }
+        }
+      },
+      "AddSMTPUserResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "user_id": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "EditSMTPUserRequest": {
+        "type": "object",
+        "required": ["username"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "RemoveSMTPUserRequest": {
+        "type": "object",
+        "required": ["username"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        }
+      },
+      "ViewDomainsResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "domains": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AddDomainRequest": {
+        "type": "object",
+        "required": ["domain"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string",
+            "description": "Domain name to add"
+          }
+        }
+      },
+      "AddDomainResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "domain_id": {
+                "type": "string"
+              },
+              "spf_record": {
+                "type": "string",
+                "description": "SPF DNS record to add"
+              },
+              "dkim_record": {
+                "type": "string",
+                "description": "DKIM DNS record to add"
+              }
+            }
+          }
+        }
+      },
+      "RemoveDomainRequest": {
+        "type": "object",
+        "required": ["domain"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          }
+        }
+      },
+      "VerifyDomainRequest": {
+        "type": "object",
+        "required": ["domain"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          }
+        }
+      },
+      "VerifyDomainResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "verified": {
+                "type": "boolean"
+              },
+              "spf_verified": {
+                "type": "boolean"
+              },
+              "dkim_verified": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      },
+      "EditTrackingDomainRequest": {
+        "type": "object",
+        "required": ["domain"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "tracking_domain": {
+            "type": "string",
+            "description": "Custom tracking domain"
+          }
+        }
+      },
+      "EditReturnPathDomainRequest": {
+        "type": "object",
+        "required": ["domain"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "return_path_domain": {
+            "type": "string",
+            "description": "Custom return path domain"
+          }
+        }
+      },
+      "ViewSingleSenderEmailsResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "emails": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AddSingleSenderEmailRequest": {
+        "type": "object",
+        "required": ["email"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        }
+      },
+      "RemoveSingleSenderEmailRequest": {
+        "type": "object",
+        "required": ["email"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        }
+      },
+      "StatsRequest": {
+        "type": "object",
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Start date for statistics"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date",
+            "description": "End date for statistics"
+          }
+        }
+      },
+      "StatsResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "description": "Statistics data"
+          }
+        }
+      },
+      "SearchArchiveRequest": {
+        "type": "object",
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "search_sender": {
+            "type": "string"
+          },
+          "search_recipient": {
+            "type": "string"
+          },
+          "search_subject": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "offset": {
+            "type": "integer"
+          }
+        }
+      },
+      "SearchArchiveResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "emails": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ViewArchiveEmailRequest": {
+        "type": "object",
+        "required": ["email_id"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "email_id": {
+            "type": "string"
+          }
+        }
+      },
+      "ViewArchiveEmailResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      },
+      "AddSubaccountRequest": {
+        "type": "object",
+        "required": ["email", "company_name"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "company_name": {
+            "type": "string"
+          },
+          "monthly_quota": {
+            "type": "integer"
+          }
+        }
+      },
+      "AddSubaccountResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "subaccount_id": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "EditSubaccountRequest": {
+        "type": "object",
+        "required": ["subaccount_id"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "subaccount_id": {
+            "type": "string"
+          },
+          "company_name": {
+            "type": "string"
+          },
+          "monthly_quota": {
+            "type": "integer"
+          }
+        }
+      },
+      "SubaccountIdRequest": {
+        "type": "object",
+        "required": ["subaccount_id"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "subaccount_id": {
+            "type": "string"
+          }
+        }
+      },
+      "ViewSuppressionsRequest": {
+        "type": "object",
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "offset": {
+            "type": "integer"
+          }
+        }
+      },
+      "ViewSuppressionsResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "suppressions": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AddSuppressionRequest": {
+        "type": "object",
+        "required": ["address"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string",
+            "description": "Email address or domain to suppress"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Reason for suppression"
+          }
+        }
+      },
+      "RemoveSuppressionRequest": {
+        "type": "object",
+        "required": ["address"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          }
+        }
+      },
+      "IPAllowlistStatusResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      },
+      "ViewIPAllowlistResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "ip_addresses": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AddIPAllowlistRequest": {
+        "type": "object",
+        "required": ["ip_address"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "ip_address": {
+            "type": "string",
+            "format": "ipv4"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "EditIPAllowlistRequest": {
+        "type": "object",
+        "required": ["ip_address"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "ip_address": {
+            "type": "string",
+            "format": "ipv4"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "RemoveIPAllowlistRequest": {
+        "type": "object",
+        "required": ["ip_address"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "ip_address": {
+            "type": "string",
+            "format": "ipv4"
+          }
+        }
+      },
+      "ViewTemplateRequest": {
+        "type": "object",
+        "required": ["template_id"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "template_id": {
+            "type": "string"
+          }
+        }
+      },
+      "ViewTemplateResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "template": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      },
+      "SearchTemplatesRequest": {
+        "type": "object",
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "search_name": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "offset": {
+            "type": "integer"
+          }
+        }
+      },
+      "SearchTemplatesResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "templates": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AddTemplateRequest": {
+        "type": "object",
+        "required": ["template_id", "template_name", "subject", "html_body"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "template_id": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 24
+          },
+          "template_name": {
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "html_body": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "AddTemplateResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "template_id": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "EditTemplateRequest": {
+        "type": "object",
+        "required": ["template_id"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "template_id": {
+            "type": "string"
+          },
+          "template_name": {
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "html_body": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "DeleteTemplateRequest": {
+        "type": "object",
+        "required": ["template_id"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "template_id": {
+            "type": "string"
+          }
+        }
+      },
+      "ViewWebhooksResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "webhooks": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AddWebhookRequest": {
+        "type": "object",
+        "required": ["url", "events"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["delivered", "open", "click", "bounce", "spam", "unsubscribe"]
+            }
+          },
+          "usernames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "SMTP users or API keys to trigger webhook for"
+          },
+          "output_type": {
+            "type": "string",
+            "enum": ["json", "form"],
+            "default": "json"
+          }
+        }
+      },
+      "AddWebhookResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "webhook_id": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "EditWebhookRequest": {
+        "type": "object",
+        "required": ["webhook_id"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "webhook_id": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "usernames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "output_type": {
+            "type": "string",
+            "enum": ["json", "form"]
+          }
+        }
+      },
+      "RemoveWebhookRequest": {
+        "type": "object",
+        "required": ["webhook_id"],
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "webhook_id": {
+            "type": "string"
+          }
+        }
+      },
+      "SuccessResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "success": {
+                "type": "boolean"
+              },
+              "message": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "error": {
+                "type": "string"
+              },
+              "error_code": {
+                "type": "string"
+              },
+              "field_validation_errors": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Bad request - missing or invalid parameters",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized - invalid or missing API key",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Forbidden - API key lacks required permissions",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Not found - requested resource does not exist",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "TooManyRequests": {
+        "description": "Too many requests - rate limit exceeded",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "ServerError": {
+        "description": "Internal server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  }
+}
